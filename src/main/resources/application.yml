@@ -10,9 +10,13 @@ spring:
     password: root
     type: com.alibaba.druid.pool.DruidDataSource
 
+#  热部署开关
   devtools:
     restart:
       enabled: false
+
+
+
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**Mapper.xml
@@ -33,6 +37,6 @@ yao:
     header: token
 
 
-logging:
-  file:
-    path:
+
+#logging:
+#  config: classpath:config/logback.xml

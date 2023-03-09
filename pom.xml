@@ -116,6 +116,15 @@
             <version>0.9.1</version>
         </dependency>
 
+        <!-- 引入Swagger3依赖 -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-boot-starter</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
+
+
     </dependencies>
 
 
