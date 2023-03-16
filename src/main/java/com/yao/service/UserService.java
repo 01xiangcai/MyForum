@@ -1,7 +1,9 @@
 package com.yao.service;
 
+import com.yao.common.Result;
 import com.yao.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.yao.entity.dto.RegisterDto;
 
 /**
  * <p>
@@ -12,5 +14,12 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2023-03-06
  */
 public interface UserService extends IService<User> {
+
+
+    Result createUser(RegisterDto registerDto);
+
+    Result deletedById(Long id);
+
+    Result getUsers();
 
 }

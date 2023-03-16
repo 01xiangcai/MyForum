@@ -12,7 +12,7 @@ import java.util.Date;
 
 /**
  * @className: JwtUtils
- * @Description: TODO
+ * @Description: JwtUtils是个生成和校验jwt的工具类，其中有些jwt相关的密钥信息是从项目配置文件中配置的
  * @author: long
  * @date: 2023/3/7 0:04
  */
