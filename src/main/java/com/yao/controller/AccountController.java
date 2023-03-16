@@ -4,10 +4,12 @@ import cn.hutool.core.map.MapUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.yao.common.Result;
+import com.yao.common.constants.UserConstants;
 import com.yao.entity.User;
 import com.yao.entity.dto.LoginDto;
 import com.yao.service.UserService;
 import com.yao.tools.JwtUtils;
+import io.swagger.annotations.Api;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.util.Assert;
@@ -16,7 +18,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 
 /**
  * @className: AccountController
@@ -24,6 +25,7 @@ import javax.validation.Valid;
  * @author: long
  * @date: 2023/3/7 1:03
  */
+@Api(tags = "登录")
 @RestController
 public class AccountController {
 
@@ -41,7 +43,7 @@ public class AccountController {
         User user = userService.getOne(new QueryWrapper<User>().eq("username", loginDto.getUsername()));
         Assert.notNull(user, "用户不存在");
         //hutools工具包的 MD5
-        if (!user.getPassword().equals(SecureUtil.md5(loginDto.getPassword()))) {
+        if (!user.getPassword().equals(SecureUtil.md5(loginDto.getPassword()+ UserConstants.USER_SLAT))) {
             return Result.fail("密码错误");
         }
         //按用户id生成token

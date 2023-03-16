@@ -22,7 +22,15 @@ import java.io.IOException;
 
 /**
  * @className: JwtFilter
- * @Description: TODO
+ * @Description: 定义jwt的过滤器JwtFilter
+ * 继承的是Shiro内置的AuthenticatingFilter，一个可以内置了可以自动登录方法的的过滤器
+ * 我们需要重写几个方法：
+ *
+ * createToken：实现登录，我们需要生成我们自定义支持的JwtToken
+ * onAccessDenied：拦截校验，当头部没有Authorization时候，我们直接通过，不需要自动登录；当带有的时候，首先我们校验jwt的有效性，没问题我们就直接执行executeLogin方法实现自动登录
+ * onLoginFailure：登录异常时候进入的方法，我们直接把异常信息封装然后抛出
+ * preHandle：拦截器的前置拦截，因为我们是前后端分析项目，项目中除了需要跨域全局配置之外，我们再拦截器中也需要提供跨域支持。这样，拦截器才不会在进入Controller之前就被限制了。
+ *
  * @author: long
  * @date: 2023/3/6 23:58
  */

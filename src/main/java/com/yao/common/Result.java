@@ -28,6 +28,14 @@ public class Result implements Serializable {
         return m;
     }
 
+    public static Result succ(String mess) {
+        Result m = new Result();
+        m.setCode("0");
+        m.setData(null);
+        m.setMsg(mess);
+        return m;
+    }
+
 
     public static Result succ(String mess, Object data) {
         Result m = new Result();
@@ -64,4 +72,6 @@ public class Result implements Serializable {
         return m;
 
     }
+
+
 }

@@ -4,21 +4,26 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
- * @className: LoginDto
+ * @className: registerDto
  * @Description: TODO
  * @author: long
- * @date: 2023/3/7 1:07
+ * @date: 2023/3/14 15:10
  */
 @Data
-public class LoginDto implements Serializable {
+public class RegisterDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @NotBlank(message = "名字不能为空")
+    @NotBlank
     private String username;
 
-    @NotBlank(message = "密码不能为空")
+    private String email;
+
+    @NotBlank
     private String password;
+
+
 }

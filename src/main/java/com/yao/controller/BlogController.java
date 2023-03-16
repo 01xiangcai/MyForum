@@ -35,7 +35,7 @@ public class BlogController {
     @Autowired
     BlogService blogService;
 
-//    @ApiOperation("文章列表")
+    @ApiOperation("文章列表")
     @GetMapping("/blogs")
     public Result blogs(Integer currentPage) {
         if (currentPage == null || currentPage < 1) currentPage = 1;

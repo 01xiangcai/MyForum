@@ -36,6 +36,14 @@ public class ShiroConfig {
     @Autowired
     JwtFilter jwtFilter;
 
+    /*
+    * @param redisSessionDAO:
+     * @return SessionManager
+    * @author long
+    * @description sessionManager() 方法返回一个 SessionManager 实例，并将 RedisSessionDAO 作为参数传入。
+    * 在实现中，使用 DefaultWebSessionManager 类作为会话管理器，并设置 sessionDAO 为传入的 RedisSessionDAO 实例。
+    * @date 2023/3/9 22:00
+    */
     @Bean
     public SessionManager sessionManager(RedisSessionDAO redisSessionDAO) {
         DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
@@ -43,6 +51,17 @@ public class ShiroConfig {
         return sessionManager;
     }
 
+    /*
+    * @param accountRealm:
+	 * @param sessionManager:
+	 * @param redisCacheManager:
+     * @return DefaultWebSecurityManager
+    * @author long
+    * @description securityManager() 方法返回一个 DefaultWebSecurityManager 实例，该实例需要 AccountRealm、SessionManager 和 RedisCacheManager 作为参数。
+    * 在实现中，将参数传入实例，并将 Shiro 自带的 Session 关闭。
+    * 最后，将 subjectDAO 设置为自定义的 DefaultSubjectDAO 实例。
+    * @date 2023/3/9 22:01
+    */
     @Bean
     public DefaultWebSecurityManager securityManager(AccountRealm accountRealm,
                                                      SessionManager sessionManager,
@@ -61,6 +80,13 @@ public class ShiroConfig {
         return securityManager;
     }
 
+    /*
+    * @param :
+     * @return ShiroFilterChainDefinition
+    * @author long
+    * @description shiroFilterChainDefinition() 方法返回一个 ShiroFilterChainDefinition 实例，并添加了一个过滤器映射：/** 路径的请求需要使用 JwtFilter 进行处理。
+    * @date 2023/3/9 22:02
+    */
     @Bean
     public ShiroFilterChainDefinition shiroFilterChainDefinition() {
         DefaultShiroFilterChainDefinition chainDefinition = new DefaultShiroFilterChainDefinition();
@@ -70,6 +96,15 @@ public class ShiroConfig {
         return chainDefinition;
     }
 
+    /*
+    * @param securityManager:
+	 * @param shiroFilterChainDefinition:
+     * @return ShiroFilterFactoryBean
+    * @author long
+    * @description shiroFilterFactoryBean() 方法返回一个 ShiroFilterFactoryBean 实例，其中传入了 SecurityManager 和 ShiroFilterChainDefinition 作为参数。在实现中，
+    * 设置了过滤器映射和过滤器链，并将自定义的 JwtFilter 添加到过滤器中。
+    * @date 2023/3/9 22:04
+    */
     @Bean("shiroFilterFactoryBean")
     public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager,
                                                          ShiroFilterChainDefinition shiroFilterChainDefinition) {

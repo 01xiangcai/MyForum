@@ -14,7 +14,13 @@ import org.springframework.stereotype.Component;
 
 /**
  * @className: AccountRealm
- * @Description: TODO
+ * @Description: AccountRealm是shiro进行登录或者权限校验的逻辑所在，算是核心了，我们需要重写3个方法，分别是
+ * supports：为了让realm支持jwt的凭证校验
+ * doGetAuthorizationInfo：权限校验
+ * doGetAuthenticationInfo：登录认证校验
+ *
+ * 其实主要就是doGetAuthenticationInfo登录认证这个方法，可以看到我们通过jwt获取到用户信息，
+ * 判断用户的状态，最后异常就抛出对应的异常信息，否者封装成SimpleAuthenticationInfo返回给shiro
  * @author: long
  * @date: 2023/3/6 23:52
  */

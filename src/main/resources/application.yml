@@ -20,6 +20,13 @@ spring:
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**Mapper.xml
+  configuration:
+    map-underscore-to-camel-case: true #开启下划线转驼峰
+  global-config:
+    db-config:
+      logic-delete-value: 1 #逻辑已删除(默认为 1)
+      logic-not-delete-value: 0 #逻辑未删除(默认为 0)
+
 
 
 shiro-redis:
