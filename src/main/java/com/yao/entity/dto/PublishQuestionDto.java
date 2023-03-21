@@ -32,7 +32,7 @@ public class PublishQuestionDto implements Serializable {
     /**
      * 创建者id
      */
-    @NotNull
+
     private Long creator;
 
     @NotBlank

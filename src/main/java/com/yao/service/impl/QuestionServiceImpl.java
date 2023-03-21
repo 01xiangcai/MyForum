@@ -1,5 +1,6 @@
 package com.yao.service.impl;
 
+import cn.hutool.core.lang.Assert;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -8,11 +9,13 @@ import com.yao.common.Result;
 import com.yao.entity.Question;
 import com.yao.entity.User;
 import com.yao.entity.dto.PublishQuestionDto;
+import com.yao.entity.vo.QuestionRecords;
 import com.yao.entity.vo.QuestionVo;
 import com.yao.mapper.QuestionMapper;
 import com.yao.mapper.UserMapper;
 import com.yao.service.QuestionService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.yao.tools.ShiroUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,33 +52,45 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         Page<Question> questionPage = new Page<>(currentPage, 5);
         QueryWrapper<Question> queryWrapper = new QueryWrapper<>();
 
+
         queryWrapper.eq("deleted", 0);
         queryWrapper.orderByDesc("gmt_create");
 
 
         IPage<Question> questionIPage = questionMapper.selectPage(questionPage, queryWrapper);
+        long total = questionIPage.getTotal();
+        long current = questionIPage.getCurrent();
+        long size = questionIPage.getSize();
         List<Question> questions = questionIPage.getRecords();
-        ArrayList<QuestionVo> questionVos = new ArrayList<>();
+
+
+        ArrayList<QuestionRecords> questionRecords = new ArrayList<>();
 
         for (Question question : questions) {
             //查找发布问题的用户
             User user = userMapper.selectById(question.getCreator());
-            QuestionVo questionVo = new QuestionVo();
+            QuestionRecords questionRecords1 = new QuestionRecords();
             //问题复制给传输对象
-            BeanUtils.copyProperties(question, questionVo);
+            BeanUtils.copyProperties(question, questionRecords1);
 
             //添加用户信息
-            questionVo.setCreator_name(user.getUsername());
-            questionVo.setCreator_avatar(user.getAvatar());
-            questionVo.setCreator_status(user.getStatus());
-            questionVo.setCreator_lastLogin(user.getLastLogin());
-            questionVo.setCreator_email(user.getEmail());
+            questionRecords1.setCreator_name(user.getUsername());
+            questionRecords1.setCreator_avatar(user.getAvatar());
+            questionRecords1.setCreator_status(user.getStatus());
+            questionRecords1.setCreator_lastLogin(user.getLastLogin());
+            questionRecords1.setCreator_email(user.getEmail());
 
-            questionVos.add(questionVo);
+            questionRecords.add(questionRecords1);
         }
 
+        QuestionVo questionVo = new QuestionVo();
+        questionVo.setQuestionRecords(questionRecords);
+        questionVo.setCurrentPage(current);
+        questionVo.setPageSize(size);
+        questionVo.setTotal(total);
 
-        return Result.succ(CustomizeResponseCode.QUESTION_FOUND_SUCCESS.getMessage(), questionVos);
+
+        return Result.succ(CustomizeResponseCode.QUESTION_FOUND_SUCCESS.getMessage(), questionVo);
     }
 
 
@@ -100,9 +115,9 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         }
 
 
-        ArrayList<QuestionVo> questionVos = new ArrayList<>();
+//        ArrayList<QuestionVo> questionVos = new ArrayList<>();
 
-        for (Question question : questions) {
+     /*   for (Question question : questions) {
 
             QuestionVo questionVo = new QuestionVo();
             BeanUtils.copyProperties(question, questionVo);
@@ -115,20 +130,17 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
 
             questionVos.add(questionVo);
 
-        }
+        }*/
 
 
 
-        return Result.succ(CustomizeResponseCode.QUESTION_FOUND_SUCCESS.getMessage(), questionVos);
+        return Result.succ(CustomizeResponseCode.QUESTION_FOUND_SUCCESS.getMessage(), questions);
     }
 
     //新增问题
     @Override
     public Result saveorUpdateQuestion(PublishQuestionDto publishQuestionDto) {
-      /*  @NotBlank String title = publishQuestionDto.getTitle();
-        @NotBlank String description = publishQuestionDto.getDescription();
-        @NotBlank String tag = publishQuestionDto.getTag();
-        @NotBlank Long creator = publishQuestionDto.getCreator();*/
+
         Long id = publishQuestionDto.getId();
 
         Question question = null;
@@ -139,6 +151,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         //存在修改
         if (id != null) {
             question = questionMapper.selectById(id);
+            Assert.isTrue(question.getCreator()== ShiroUtil.getProfile().getId(),"你没有权限编辑");
             if (question == null) {
                 return Result.fail(CustomizeResponseCode.QUESTION_NOT_FOUND.getMessage());
             }
@@ -147,14 +160,12 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         } else {
             //不存在直接插入
             question = new Question();
-            /*question.setTitle(title);
-            question.setDescription(description);
-            question.setCreator(creator);
-            question.setTag(tag);*/
             question.setGmtCreate(now);
+            question.setCreator(ShiroUtil.getProfile().getId());
+
         }
 
-        BeanUtils.copyProperties(publishQuestionDto, question, "id");
+        BeanUtils.copyProperties(publishQuestionDto, question, "id","creator");
 
 
         QuestionServiceImpl.super.saveOrUpdate(question);
