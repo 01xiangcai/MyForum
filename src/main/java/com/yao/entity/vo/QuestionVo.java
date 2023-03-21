@@ -1,11 +1,9 @@
 package com.yao.entity.vo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @className: QuestionVo
@@ -18,65 +16,15 @@ public class QuestionVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "id", type = IdType.AUTO)
-    private Long id;
 
-    /**
-     * 标题
-     */
-    private String title;
+    List<QuestionRecords> questionRecords;
 
-    /**
-     * 问题描述
-     */
-    private String description;
+    //数据总数
+    private Long total;
 
-    /**
-     * 创建时间
-     */
-    private LocalDateTime gmtCreate;
+    private Long  pageSize;
 
-    /**
-     * 修改时间
-     */
-    private LocalDateTime gmtModified;
+    private Long currentPage;
 
-    /**
-     * 创建者id
-     */
-    private Long creator;
-
-    /**
-     * 评论数量
-     */
-    private Integer commentCount;
-
-    /**
-     * 点赞数量
-     */
-    private Integer likeCount;
-
-    /**
-     * 观看数量
-     */
-    private Integer viewCount;
-
-    /**
-     * 标签
-     */
-    private String tag;
-
-    private Integer deleted;
-
-
-    private String creator_name;
-
-    private String creator_avatar;
-
-    private String creator_email;
-
-    private Integer creator_status;
-
-    private LocalDateTime creator_lastLogin;
 
 }

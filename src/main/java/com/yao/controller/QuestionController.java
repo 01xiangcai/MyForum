@@ -3,6 +3,7 @@ package com.yao.controller;
 
 import com.yao.common.CustomizeResponseCode;
 import com.yao.common.Result;
+import com.yao.entity.Question;
 import com.yao.entity.dto.PublishQuestionDto;
 import com.yao.service.QuestionService;
 import io.swagger.annotations.Api;
@@ -34,6 +35,16 @@ public class QuestionController {
         return questionService.questions(currentPage);
     }
 
+    @ApiOperation("根据id查看问题")
+    @GetMapping("/question/{id}")
+    public Result questionById(@PathVariable("id") Long id){
+        Question question = questionService.getById(id);
+        if (question==null){
+            return Result.fail(CustomizeResponseCode.QUESTION_NOT_FOUND.getMessage());
+        }
+        return Result.succ(CustomizeResponseCode.QUESTION_FOUND_SUCCESS.getMessage(),question);
+    }
+
     @ApiOperation("新增问题或修改问题")
     @PostMapping("/publish")
     public Result publishQuestion(@RequestBody @Validated PublishQuestionDto publishQuestionDto, BindingResult result){
@@ -54,7 +65,7 @@ public class QuestionController {
     }
 
     @ApiOperation("逻辑删除问题")
-    @GetMapping("/delete1{id}")
+    @GetMapping("/delete1/{id}")
     public Result deleteQuestion1(@PathVariable("id") Long id) {
         return questionService.deleteQuestion(id);
     }

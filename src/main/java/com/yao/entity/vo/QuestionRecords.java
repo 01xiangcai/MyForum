@@ -1,32 +1,18 @@
-package com.yao.entity;
-
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import java.io.Serializable;
-import java.time.LocalDateTime;
+package com.yao.entity.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
-import org.springframework.boot.jackson.JsonComponent;
+
+import java.time.LocalDateTime;
 
 /**
- * <p>
- * 
- * </p>
- *
- * @author long
- * @since 2023-03-14
+ * @className: QuestionRecords
+ * @Description: TODO
+ * @author: long
+ * @date: 2023/3/20 16:23
  */
 @Data
-@EqualsAndHashCode(callSuper = false)
-@Accessors(chain = true)
-public class Question implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    @TableId(value = "id", type = IdType.AUTO)
+public class QuestionRecords {
     private Long id;
 
     /**
@@ -79,4 +65,13 @@ public class Question implements Serializable {
     private Integer deleted;
 
 
+    private String creator_name;
+
+    private String creator_avatar;
+
+    private String creator_email;
+
+    private Integer creator_status;
+
+    private LocalDateTime creator_lastLogin;
 }

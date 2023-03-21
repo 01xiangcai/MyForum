@@ -9,7 +9,6 @@ spring:
     username: root
     password: root
     type: com.alibaba.druid.pool.DruidDataSource
-
 #  热部署开关
   devtools:
     restart:
