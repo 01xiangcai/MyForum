@@ -25,6 +25,7 @@ public enum  CustomizeResponseCode {
     COMMENT_FOUND_FAIL("查找评论失败"),
     COMMENT_DELETE_SUCCESS("删除评论成功"),
     COMMENT_DELETE_FAIL("删除评论失败"),
+    COMMENT_TYPE_ERROE("评论类型错误"),
 
     USER_NOT_FOUND("该用户不存在"),
 

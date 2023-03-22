@@ -1,6 +1,7 @@
 package com.yao.controller;
 
 
+import com.yao.common.CommentTypeEnum;
 import com.yao.common.CustomizeResponseCode;
 import com.yao.common.Result;
 import com.yao.entity.dto.CommentDto;
@@ -10,11 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -39,6 +36,16 @@ public class CommentController {
             return Result.fail(CustomizeResponseCode.COMMENT_IS_NULL.getMessage());
         }
         return commentService.createComment(commentDto);
+    }
+
+    @ApiOperation("查询评论")
+    @GetMapping("/commentList")
+    public Result commentList(@RequestParam("parentId") Long parentId,
+                              @RequestParam("type") Integer type){
+        if (!CommentTypeEnum.exist(type)){
+            return Result.fail(CustomizeResponseCode.COMMENT_TYPE_ERROE.getMessage());
+        }
+        return commentService.commentList(parentId,type);
     }
 
 

@@ -16,4 +16,6 @@ import com.yao.entity.dto.CommentDto;
 public interface CommentService extends IService<Comment> {
 
     Result createComment(CommentDto commentDto);
+
+    Result commentList(Long parentId, Integer type);
 }
