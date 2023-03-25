@@ -77,5 +77,14 @@ public class QuestionController {
     }
 
 
+    @ApiOperation("增加阅读数")
+    @GetMapping("/increaseView")
+    public Result increaseView(@RequestParam Long id){
+        if (id==null){
+            return Result.fail(CustomizeResponseCode.QUESTION_NOT_FOUND.getMessage());
+        }
+        return questionService.increaseView(id);
+    }
+
 
 }

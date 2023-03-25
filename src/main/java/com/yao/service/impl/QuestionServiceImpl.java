@@ -99,11 +99,11 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
     public Result selectById(Long id) {
         QueryWrapper<Question> queryWrapper = new QueryWrapper<>();
 
-        queryWrapper.in("creator", id).in("deleted",0);
+        queryWrapper.in("creator", id).in("deleted", 0);
 
         User user = userMapper.selectById(id);
 
-        if (user==null){
+        if (user == null) {
             return Result.fail(CustomizeResponseCode.USER_NOT_FOUND.getMessage());
         }
 
@@ -133,7 +133,6 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         }*/
 
 
-
         return Result.succ(CustomizeResponseCode.QUESTION_FOUND_SUCCESS.getMessage(), questions);
     }
 
@@ -151,7 +150,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         //存在修改
         if (id != null) {
             question = questionMapper.selectById(id);
-            Assert.isTrue(question.getCreator()== ShiroUtil.getProfile().getId(),"你没有权限编辑");
+            Assert.isTrue(question.getCreator() == ShiroUtil.getProfile().getId(), "你没有权限编辑");
             if (question == null) {
                 return Result.fail(CustomizeResponseCode.QUESTION_NOT_FOUND.getMessage());
             }
@@ -162,10 +161,9 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
             question = new Question();
             question.setGmtCreate(now);
             question.setCreator(ShiroUtil.getProfile().getId());
-
         }
 
-        BeanUtils.copyProperties(publishQuestionDto, question, "id","creator");
+        BeanUtils.copyProperties(publishQuestionDto, question, "id", "creator");
 
 
         QuestionServiceImpl.super.saveOrUpdate(question);
@@ -189,5 +187,17 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
             return Result.fail(CustomizeResponseCode.QUESTION_DELETE_FAIL.getMessage());
         }
         return Result.succ(CustomizeResponseCode.QUESTION_DELETE_SUCCES.getMessage());
+    }
+
+
+    //增加阅读数
+    @Override
+    public Result increaseView(Long id) {
+        Question question = questionMapper.selectById(id);
+        Integer viewCount = question.getViewCount();
+        question.setViewCount(viewCount + 1);
+        questionMapper.updateById(question);
+
+        return Result.succ(CustomizeResponseCode.INCREASEVIEW_SUCCESS.getMessage());
     }
 }

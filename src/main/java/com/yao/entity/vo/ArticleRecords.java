@@ -7,25 +7,30 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * @className: QuestionRecords
+ * @className: ArticleRecords
  * @Description: TODO
  * @author: long
- * @date: 2023/3/20 16:23
+ * @date: 2023/3/25 16:32
  */
 @Data
-public class QuestionRecords implements Serializable {
+public class ArticleRecords implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private Long id;
 
     /**
-     * 标题
+     * 发布人
+     */
+    private Long creator;
+
+    /**
+     * 文章标题
      */
     private String title;
 
     /**
-     * 问题描述
+     * 文章内容
      */
     private String description;
 
@@ -42,9 +47,9 @@ public class QuestionRecords implements Serializable {
     private LocalDateTime gmtModified;
 
     /**
-     * 创建者id
+     * 喜欢数量
      */
-    private Long creator;
+    private Integer likeCount;
 
     /**
      * 评论数量
@@ -52,12 +57,7 @@ public class QuestionRecords implements Serializable {
     private Integer commentCount;
 
     /**
-     * 点赞数量
-     */
-    private Integer likeCount;
-
-    /**
-     * 观看数量
+     * 看过数量
      */
     private Integer viewCount;
 

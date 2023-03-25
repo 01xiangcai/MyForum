@@ -22,4 +22,7 @@ public interface QuestionService extends IService<Question> {
     Result deleteQuestion(Long id);
 
     Result selectById(Long id);
+
+
+    Result increaseView(Long id);
 }
