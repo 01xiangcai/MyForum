@@ -120,7 +120,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
             if (article==null){
                 return Result.fail(CustomizeResponseCode.ARTICLE_NOT_FOUND.getMessage());
             }
-//            Assert.isTrue(article.getCreator()== ShiroUtil.getProfile().getId(),"你没有权限编辑");
+            Assert.isTrue(article.getCreator()== ShiroUtil.getProfile().getId(),"你没有权限编辑");
             article.setGmtModified(now);
             a = 1;
         } else {
@@ -143,14 +143,25 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     //根据用户查看文章列表
     @Override
-    public Result articleByUserId(Long id, Integer currentPage) {
+    public Result articleByUserId(Long id, Integer currentPage, Integer size) {
         //设置分页参数
-        Page<Article> articlePage = new Page<>(currentPage, 5);
+        Page<Article> articlePage = new Page<>(currentPage, size);
         QueryWrapper<Article> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("creator",id).orderByDesc("gmt_create").eq("deleted",0);
 
         IPage<Article> articleIPage = articleMapper.selectPage(articlePage, queryWrapper);
 
         return Result.succ(CustomizeResponseCode.ARTICLE_FOUND_SUCCESS.getMessage(),articleIPage);
+    }
+
+    //增加阅读数
+    @Override
+    public Result increaseView(Long id) {
+        Article article = articleMapper.selectById(id);
+        Integer viewCount = article.getViewCount();
+        article.setViewCount(viewCount + 1);
+        articleMapper.updateById(article);
+        return Result.succ(CustomizeResponseCode.INCREASEVIEW_SUCCESS.getMessage());
+
     }
 }

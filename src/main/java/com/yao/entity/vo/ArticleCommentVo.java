@@ -1,20 +1,19 @@
 package com.yao.entity.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.yao.entity.Comment;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * @className: CommentVo
+ * @className: ArticleCommentVo
  * @Description: TODO
  * @author: long
- * @date: 2023/3/22 14:52
+ * @date: 2023/3/26 16:12
  */
 @Data
-public class CommentVo implements Serializable {
+public class ArticleCommentVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -66,5 +65,4 @@ public class CommentVo implements Serializable {
     private String username;
 
     private String avatar;
-
 }

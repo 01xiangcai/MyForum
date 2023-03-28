@@ -1,24 +1,31 @@
-package com.yao.entity.vo;
+package com.yao.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.yao.entity.Comment;
-import lombok.Data;
-
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
+
 /**
- * @className: CommentVo
- * @Description: TODO
- * @author: long
- * @date: 2023/3/22 14:52
+ * <p>
+ * 
+ * </p>
+ *
+ * @author long
+ * @since 2023-03-26
  */
 @Data
-public class CommentVo implements Serializable {
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
+public class ArticleComment implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    //评论id
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**
@@ -63,8 +70,5 @@ public class CommentVo implements Serializable {
      */
     private Integer commentCount;
 
-    private String username;
-
-    private String avatar;
 
 }

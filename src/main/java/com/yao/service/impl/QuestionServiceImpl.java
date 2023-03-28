@@ -20,7 +20,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -96,44 +95,16 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
 
     //根据用户id找问题
     @Override
-    public Result selectById(Long id) {
+    public Result selectById(Long id, Integer currentPage, Integer size) {
+
+        //封装分页参数和查询参数
+        Page<Question> questionPage = new Page<>(currentPage, size);
         QueryWrapper<Question> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("creator", id).in("deleted", 0).orderByDesc("gmt_create");
 
-        queryWrapper.in("creator", id).in("deleted", 0);
+        IPage<Question> questionIPage = questionMapper.selectPage(questionPage, queryWrapper);
 
-        User user = userMapper.selectById(id);
-
-        if (user == null) {
-            return Result.fail(CustomizeResponseCode.USER_NOT_FOUND.getMessage());
-        }
-
-        List<Question> questions = questionMapper.selectList(queryWrapper);
-
-
-        if (questions.size() == 0 || questions == null) {
-            return Result.fail(CustomizeResponseCode.QUESTION_NOT_FOUND.getMessage());
-        }
-
-
-//        ArrayList<QuestionVo> questionVos = new ArrayList<>();
-
-     /*   for (Question question : questions) {
-
-            QuestionVo questionVo = new QuestionVo();
-            BeanUtils.copyProperties(question, questionVo);
-
-            questionVo.setCreator_name(user.getUsername());
-            questionVo.setCreator_avatar(user.getAvatar());
-            questionVo.setCreator_status(user.getStatus());
-            questionVo.setCreator_lastLogin(user.getLastLogin());
-            questionVo.setCreator_email(user.getEmail());
-
-            questionVos.add(questionVo);
-
-        }*/
-
-
-        return Result.succ(CustomizeResponseCode.QUESTION_FOUND_SUCCESS.getMessage(), questions);
+        return Result.succ(CustomizeResponseCode.QUESTION_FOUND_SUCCESS.getMessage(), questionIPage);
     }
 
     //新增问题

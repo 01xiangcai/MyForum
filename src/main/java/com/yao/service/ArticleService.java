@@ -19,5 +19,7 @@ public interface ArticleService extends IService<Article> {
 
     Result saveOrUpdateArticle(ArticleDto articleDto);
 
-    Result articleByUserId(Long id, Integer currentPage);
+    Result articleByUserId(Long id, Integer currentPage, Integer size);
+
+    Result increaseView(Long id);
 }

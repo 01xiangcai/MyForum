@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
- *  前端控制器
+ * 前端控制器
  * </p>
  *
  * @author long
@@ -31,24 +31,24 @@ public class QuestionController {
 
     @ApiOperation("问题展示")
     @GetMapping("/questions")
-    public Result questions(Integer currentPage){
+    public Result questions(Integer currentPage) {
         return questionService.questions(currentPage);
     }
 
     @ApiOperation("根据id查看问题")
     @GetMapping("/question/{id}")
-    public Result questionById(@PathVariable("id") Long id){
+    public Result questionById(@PathVariable("id") Long id) {
         Question question = questionService.getById(id);
-        if (question==null){
+        if (question == null) {
             return Result.fail(CustomizeResponseCode.QUESTION_NOT_FOUND.getMessage());
         }
-        return Result.succ(CustomizeResponseCode.QUESTION_FOUND_SUCCESS.getMessage(),question);
+        return Result.succ(CustomizeResponseCode.QUESTION_FOUND_SUCCESS.getMessage(), question);
     }
 
     @ApiOperation("新增问题或修改问题")
     @PostMapping("/publish")
-    public Result publishQuestion(@RequestBody @Validated PublishQuestionDto publishQuestionDto, BindingResult result){
-        if (result.hasErrors()){
+    public Result publishQuestion(@RequestBody @Validated PublishQuestionDto publishQuestionDto, BindingResult result) {
+        if (result.hasErrors()) {
             return Result.fail(CustomizeResponseCode.QUESTION_NOT_NULL.getMessage());
         }
         return questionService.saveorUpdateQuestion(publishQuestionDto);
@@ -56,9 +56,9 @@ public class QuestionController {
 
     @ApiOperation("删除问题")
     @GetMapping("/delete{id}")
-    public Result deleteQuestion(@PathVariable("id") Long id){
+    public Result deleteQuestion(@PathVariable("id") Long id) {
         boolean b = questionService.removeById(id);
-        if (b==true){
+        if (b == true) {
             return Result.succ(CustomizeResponseCode.QUESTION_DELETE_SUCCES.getMessage());
         }
         return Result.fail(CustomizeResponseCode.QUESTION_DELETE_FAIL.getMessage());
@@ -71,16 +71,18 @@ public class QuestionController {
     }
 
     @ApiOperation("根据用户id查问题")
-    @GetMapping("/questions/{id}")
-    public Result questionsById(@PathVariable("id") Long id){
-        return questionService.selectById(id);
+    @GetMapping("/questionsById")
+    public Result questionsById(@RequestParam Long userId,
+                                @RequestParam(defaultValue = "1") Integer currentPage,
+                                @RequestParam(defaultValue = "5") Integer size) {
+        return questionService.selectById(userId, currentPage, size);
     }
 
 
     @ApiOperation("增加阅读数")
     @GetMapping("/increaseView")
-    public Result increaseView(@RequestParam Long id){
-        if (id==null){
+    public Result increaseView(@RequestParam Long id) {
+        if (id == null) {
             return Result.fail(CustomizeResponseCode.QUESTION_NOT_FOUND.getMessage());
         }
         return questionService.increaseView(id);
