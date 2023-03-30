@@ -42,6 +42,10 @@ public enum  CustomizeResponseCode {
     USER_NOT_FOUND("该用户不存在"),
 
 
+    UPLOAD_SUCCESS("上传成功"),
+    UPLOAD_FAIL("上传失败");
+
+
 
     ;
 

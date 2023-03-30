@@ -3,6 +3,7 @@ package com.yao.controller;
 
 import com.yao.common.CustomizeResponseCode;
 import com.yao.common.Result;
+import com.yao.common.service.HotService;
 import com.yao.entity.Article;
 import com.yao.entity.dto.ArticleDto;
 import com.yao.service.ArticleService;
@@ -15,6 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.naming.spi.ResolveResult;
+import java.util.List;
 
 /**
  * <p>
@@ -31,6 +33,8 @@ public class ArticleController {
 
     @Autowired
     ArticleService articleService;
+    @Autowired
+    HotService hotService;
 
     //查看文章列表
     @ApiOperation("查看文章")
@@ -47,7 +51,18 @@ public class ArticleController {
         if (article==null){
             return Result.fail(CustomizeResponseCode.ARTICLE_NOT_FOUND.getMessage());
         }
+        hotService.incrementArticleReadCount(id);
         return Result.succ(CustomizeResponseCode.ARTICLE_FOUND_SUCCESS.getMessage(),article);
+    }
+
+    @ApiOperation("查看热门文章")
+    @GetMapping("/article/hot")
+    public Result articleHot(Integer count){
+        List<Article> hotArticles = hotService.getHotArticles(count);
+        if (hotArticles.size()==0||hotArticles==null){
+            return Result.fail(CustomizeResponseCode.ARTICLE_NOT_FOUND.getMessage());
+        }
+        return Result.succ(CustomizeResponseCode.ARTICLE_FOUND_SUCCESS.getMessage(),hotArticles);
     }
 
     //根据用户id查看文章

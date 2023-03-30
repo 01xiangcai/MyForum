@@ -16,8 +16,10 @@ import org.crazycake.shiro.RedisCacheManager;
 import org.crazycake.shiro.RedisSessionDAO;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import javax.servlet.Filter;
 import java.util.HashMap;
@@ -31,6 +33,7 @@ import java.util.Map;
  * @date: 2023/3/6 23:41
  */
 @Configuration
+@EnableCaching
 public class ShiroConfig {
 
     @Autowired
