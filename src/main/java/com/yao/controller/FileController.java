@@ -28,4 +28,12 @@ public class FileController {
     public Result uploadImages( @RequestPart("file") MultipartFile file){
         return fileService.upload(file);
     }
+
+    @ApiOperation("七牛云图片上传")
+    @PostMapping("/qiniuImages")
+    public Result qiNiuUploadImages( @RequestPart("file") MultipartFile file){
+        return fileService.QiNiuUpload(file);
+    }
+
+
 }

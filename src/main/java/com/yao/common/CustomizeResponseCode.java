@@ -41,6 +41,15 @@ public enum  CustomizeResponseCode {
 
     USER_NOT_FOUND("该用户不存在"),
 
+    NOTIFITION_ERROR("通知参数错误"),
+    NOTIFITION_INSERT_SUCCESS("新增通知成功"),
+    NOTIFITION_INSERT_FAIL("新增通知失败"),
+    NOTIFITION_FOUND_SUCCESS("查询通知成功"),
+    NOTIFITION_FOUND_FAIL("查询通知失败"),
+    NOTIFITION_READORNOTGOUND("该消息已读或者不存在"),
+    NOTIFITION_READ_SUCCESS("消息已读成功"),
+    NOTIFITION_READ_FAIL("消息已读失败"),
+
 
     UPLOAD_SUCCESS("上传成功"),
     UPLOAD_FAIL("上传失败");

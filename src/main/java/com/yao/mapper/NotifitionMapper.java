@@ -1,6 +1,6 @@
 package com.yao.mapper;
 
-import com.yao.entity.Notification;
+import com.yao.entity.Notifition;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -9,8 +9,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author long
- * @since 2023-03-14
+ * @since 2023-03-31
  */
-public interface NotificationMapper extends BaseMapper<Notification> {
+public interface NotifitionMapper extends BaseMapper<Notifition> {
 
 }

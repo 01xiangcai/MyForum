@@ -43,6 +43,14 @@ aliyun:
      AccessKeySecret: 01UTVU2JNKE7Gmm59XwTnzZptqQGry
      bucketname: forum01
 
+qiniuyun:
+  kodo:
+    file:
+      accessKey: Khiy-97dTfU25vf13Oiyoappzk4XeF9EIFBrpG3p
+      secretKey: O21UONA9c2PvvpPCEPpo-qoL3P4P1eKCh9CxI0q8
+      bucket: myforum22
+      domain: rsdhe1gmr.hn-bkt.clouddn.com
+
 
 
 

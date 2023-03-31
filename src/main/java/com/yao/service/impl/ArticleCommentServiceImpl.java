@@ -9,11 +9,13 @@ import com.yao.entity.ArticleComment;
 import com.yao.entity.Question;
 import com.yao.entity.User;
 import com.yao.entity.dto.ArticleCommentDto;
+import com.yao.entity.dto.NotifitionDto;
 import com.yao.entity.vo.ArticleCommentVo;
 import com.yao.entity.vo.CommentVo;
 import com.yao.mapper.*;
 import com.yao.service.ArticleCommentService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.yao.service.NotifitionService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,6 +48,9 @@ public class ArticleCommentServiceImpl extends ServiceImpl<ArticleCommentMapper,
     @Autowired
     ArticleMapper articleMapper;
 
+    @Autowired
+    NotifitionService notifitionService;
+
     //增加评论
     @Override
     public Result createComment(ArticleCommentDto articleCommentDto) {
@@ -60,11 +65,40 @@ public class ArticleCommentServiceImpl extends ServiceImpl<ArticleCommentMapper,
         BeanUtils.copyProperties(articleCommentDto, articleComment);
         articleComment.setGmtCreate(now);
 
+        //插入数据库
         int rows = articleCommentMapper.insert(articleComment);
 
         if (rows == 0) {
             return Result.fail(CustomizeResponseCode.COMMENT_INSERT_FAIL.getMessage());
         }
+
+        //评论成功后创建消息通知
+        NotifitionDto notifitionDto = new NotifitionDto();
+        //评论人-->消息创建者
+        notifitionDto.setNotifier(articleCommentDto.getCommentator());
+        //文章或评论所属人-->通知对象
+        if (articleCommentDto.getType()==1){
+            //回复文章,找出文章所属人
+            Article article = articleMapper.selectById(articleCommentDto.getParentId());
+            notifitionDto.setReceiver(article.getCreator());
+            //将通知属性设为1，表示回复文章
+            notifitionDto.setType(1);
+            //设置被回复的文章id
+            notifitionDto.setOuterid(article.getId());
+        }
+        if (articleCommentDto.getType()==2){
+            //回复文章评论，找出评论人
+            ArticleComment articleComment1 = articleCommentMapper.selectById(articleCommentDto.getParentId());
+            notifitionDto.setReceiver(articleComment1.getCommentator());
+            //将通知属性设为11，表示回复文章评论
+            notifitionDto.setType(11);
+            //设置被回复评论id
+            notifitionDto.setOuterid(articleComment1.getId());
+        }
+        //调用方法对通知消息进行存储
+        notifitionService.createNotifition(notifitionDto);
+
+
 
         //增加文章的评论数
         Article article = new Article();
@@ -84,6 +118,7 @@ public class ArticleCommentServiceImpl extends ServiceImpl<ArticleCommentMapper,
             article.setCommentCount(1);
         }
 
+        //文章评论数插入数据库
         articleMapper.increaseComment(article);
 
 

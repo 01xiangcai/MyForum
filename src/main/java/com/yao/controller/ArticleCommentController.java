@@ -7,6 +7,7 @@ import com.yao.common.Result;
 import com.yao.entity.dto.ArticleCommentDto;
 import com.yao.entity.dto.CommentDto;
 import com.yao.service.ArticleCommentService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
  * @author long
  * @since 2023-03-26
  */
+@Api(tags = "文章评论")
 @RestController
 @RequestMapping("/article-comment")
 public class ArticleCommentController {
