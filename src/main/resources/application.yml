@@ -13,6 +13,18 @@ spring:
   devtools:
     restart:
       enabled: false
+  redis:
+    host: 47.113.198.68
+    port: 6379
+  servlet:
+   multipart:
+     max-file-size: 10MB #单个文件大小限制
+     max-request-size: 10MB #整个上传请求大小限制
+
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
 
 
 
@@ -25,6 +37,26 @@ mybatis-plus:
     db-config:
       logic-delete-value: 1 #逻辑已删除(默认为 1)
       logic-not-delete-value: 0 #逻辑未删除(默认为 0)
+
+
+#阿里云
+aliyun:
+  oss:
+    file:
+     endpoint: oss-cn-guangzhou.aliyuncs.com
+     AccessKeyId: LTAI5t8sXGa7nH7PM7XPKQM3
+     AccessKeySecret: 01UTVU2JNKE7Gmm59XwTnzZptqQGry
+     bucketname: forum01
+
+qiniuyun:
+  kodo:
+    file:
+      accessKey: Khiy-97dTfU25vf13Oiyoappzk4XeF9EIFBrpG3p
+      secretKey: O21UONA9c2PvvpPCEPpo-qoL3P4P1eKCh9CxI0q8
+      bucket: myforum22
+      domain: rsdhe1gmr.hn-bkt.clouddn.com
+
+
 
 
 

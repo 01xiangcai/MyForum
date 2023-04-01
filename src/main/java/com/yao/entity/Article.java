@@ -75,5 +75,7 @@ public class Article implements Serializable {
      */
     private String tag;
 
+    private Integer deleted;
+
 
 }

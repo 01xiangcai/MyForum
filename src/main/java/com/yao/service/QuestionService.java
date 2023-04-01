@@ -21,5 +21,8 @@ public interface QuestionService extends IService<Question> {
 
     Result deleteQuestion(Long id);
 
-    Result selectById(Long id);
+    Result selectById(Long id, Integer currentPage, Integer size);
+
+
+    Result increaseView(Long id);
 }
