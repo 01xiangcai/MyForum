@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.yao.common.Result;
 import com.yao.entity.Notifition;
 import com.yao.entity.dto.NotifitionDto;
+import com.yao.entity.vo.NotificationVo;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 
@@ -22,4 +23,9 @@ public interface NotifitionService extends IService<Notifition> {
     Result createNotifition(NotifitionDto notifitionDto);
 
     Result markRead(Long id);
+
+    //根据NotifitionDto得到NotificationVo对象返回前端数据
+    NotificationVo getNotificationVo(NotifitionDto notifitionDto);
+
+    Result getNotifitionViews(Integer currentPage, Integer pageSize, Long id, Integer readType);
 }

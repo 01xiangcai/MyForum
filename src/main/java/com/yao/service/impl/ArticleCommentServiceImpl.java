@@ -12,6 +12,7 @@ import com.yao.entity.dto.ArticleCommentDto;
 import com.yao.entity.dto.NotifitionDto;
 import com.yao.entity.vo.ArticleCommentVo;
 import com.yao.entity.vo.CommentVo;
+import com.yao.handler.NotifitionHandler;
 import com.yao.mapper.*;
 import com.yao.service.ArticleCommentService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +52,9 @@ public class ArticleCommentServiceImpl extends ServiceImpl<ArticleCommentMapper,
 
     @Autowired
     NotifitionService notifitionService;
+
+    @Autowired
+    NotifitionHandler notifitionHandler;
 
     //增加评论
     @Override
@@ -97,7 +102,8 @@ public class ArticleCommentServiceImpl extends ServiceImpl<ArticleCommentMapper,
         }
         //调用方法对通知消息进行存储
         notifitionService.createNotifition(notifitionDto);
-
+        //同时向前端试试发送通知，让用户感知
+        notifitionHandler.sendNotification(notifitionDto);
 
 
         //增加文章的评论数
