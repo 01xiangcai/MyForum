@@ -49,10 +49,17 @@ public class NotifitionController {
     @ApiOperation("返回空前端页面的消息数据")
     @GetMapping("/getNotifitionViews")
     public Result getNotifitionViews(@RequestParam(defaultValue = "1") Integer currentPage,
-                                     @RequestParam(defaultValue = "5") Integer pageSize,
+                                     @RequestParam(defaultValue = "10") Integer pageSize,
                                      @ApiParam(value = "用户id") @RequestParam Long id,
                                      @ApiParam(value = "查看消息类型，0为未读，1为已读,不传参为查看全部") @RequestParam(required = false) Integer readType) {
         return notifitionService.getNotifitionViews(currentPage, pageSize, id, readType);
+    }
+
+    @ApiOperation("查看指定用户消息数量")
+    @GetMapping("/getNotificationCountById")
+    public Result getNotificationCountById(@ApiParam(value = "用户id") @RequestParam Long userId,
+                                           @ApiParam(value = "未读0，已读1") @RequestParam Long readType){
+        return notifitionService.getNotificationCountById(userId,readType);
     }
 
     @ApiOperation("标记消息已读")

@@ -1,5 +1,6 @@
 package com.yao.entity.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -35,6 +36,12 @@ public class NotifitionDto implements Serializable {
      * 被回复的文章/问题/评论id
      */
     private Long outerid;
+
+    /**
+     * 创建时间
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime created;
 
 
 

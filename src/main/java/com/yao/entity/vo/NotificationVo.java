@@ -16,11 +16,23 @@ import java.time.LocalDateTime;
 public class NotificationVo implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    private Long id;
+
     //创建通知的人的名字
     private String notifierName;
 
+    /**
+     * 通知对象id
+     */
+    private Long receiver;
+
     //通知对象的名字
     private String receiverName;
+
+    /**
+     * 被回复的文章/问题/评论id
+     */
+    private Long outerid;
 
     //被回复的文章、问题、评论的标题或具体内容
     private String outerName;

@@ -125,8 +125,11 @@ public class NotifitionServiceImpl extends ServiceImpl<NotifitionMapper, Notifit
             //将数据封装成NotifitionDto，再转换成NotifitionVo返回
             NotifitionDto notifitionDto = new NotifitionDto();
             BeanUtils.copyProperties(notifition,notifitionDto);
+
             //调用方法将id转为具体的数据
             NotificationVo notificationVo = getNotificationVo(notifitionDto);
+            //得到问题的主键id
+            notificationVo.setId(notifition.getId());
             //放入结果集
             notificationVos.add(notificationVo);
         }
@@ -139,6 +142,24 @@ public class NotifitionServiceImpl extends ServiceImpl<NotifitionMapper, Notifit
         notifitionVoIPage.setTotal(notifitionIPage.getTotal());
 
         return Result.succ(CustomizeResponseCode.NOTIFITION_FOUND_SUCCESS.getMessage(),notifitionVoIPage);
+
+    }
+
+
+    @Override
+    public Result getNotificationCountById(Long userId, Long readType) {
+
+
+        //构造查询参数
+        QueryWrapper<Notifition> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("receiver",userId).in("readed",readType).orderByDesc("created");
+
+        //查询
+        List<Notifition> notifitions = notifitionMapper.selectList(queryWrapper);
+        //得到数量
+        int notificationCount = notifitions.size();
+
+        return Result.succ(CustomizeResponseCode.NOTIFITION_FOUND_SUCCESS.getMessage(),notificationCount);
 
     }
 
@@ -170,14 +191,21 @@ public class NotifitionServiceImpl extends ServiceImpl<NotifitionMapper, Notifit
         Integer type = notifitionDto.getType();
         Long outerid = notifitionDto.getOuterid();
 
+
         //创建返回对象
         NotificationVo notificationVo = new NotificationVo();
+
+        //被回复的文章或问题或评论id
+        notificationVo.setOuterid(outerid);
+        //通知对象id
+        notificationVo.setReceiver(receiver);
+
 
         //找出对用的用户名
         notificationVo.setNotifierName(userMapper.selectById(notifier).getUsername());
         notificationVo.setReceiverName(userMapper.selectById(receiver).getUsername());
         //创建通知时间
-        notificationVo.setCreated(LocalDateTime.now());
+        notificationVo.setCreated(notifitionDto.getCreated());
 
         //回复文章
         if (type == 1) {
