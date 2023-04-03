@@ -28,4 +28,6 @@ public interface NotifitionService extends IService<Notifition> {
     NotificationVo getNotificationVo(NotifitionDto notifitionDto);
 
     Result getNotifitionViews(Integer currentPage, Integer pageSize, Long id, Integer readType);
+
+    Result getNotificationCountById(Long userId, Long readType);
 }
