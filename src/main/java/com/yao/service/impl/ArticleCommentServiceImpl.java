@@ -1,28 +1,28 @@
 package com.yao.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yao.common.CommentTypeEnum;
 import com.yao.common.CustomizeResponseCode;
 import com.yao.common.Result;
 import com.yao.entity.Article;
 import com.yao.entity.ArticleComment;
-import com.yao.entity.Question;
 import com.yao.entity.User;
 import com.yao.entity.dto.ArticleCommentDto;
 import com.yao.entity.dto.NotifitionDto;
 import com.yao.entity.vo.ArticleCommentVo;
-import com.yao.entity.vo.CommentVo;
 import com.yao.handler.NotifitionHandler;
-import com.yao.mapper.*;
+import com.yao.mapper.ArticleCommentMapper;
+import com.yao.mapper.ArticleMapper;
+import com.yao.mapper.UserMapper;
 import com.yao.service.ArticleCommentService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yao.service.NotifitionService;
+import com.yao.tools.ShiroUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.NotNull;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +56,11 @@ public class ArticleCommentServiceImpl extends ServiceImpl<ArticleCommentMapper,
     @Autowired
     NotifitionHandler notifitionHandler;
 
+    //缓存
+    @Autowired
+    CacheManager cacheManager;
+
+
     //增加评论
     @Override
     public Result createComment(ArticleCommentDto articleCommentDto) {
@@ -82,7 +87,7 @@ public class ArticleCommentServiceImpl extends ServiceImpl<ArticleCommentMapper,
         //评论人-->消息创建者
         notifitionDto.setNotifier(articleCommentDto.getCommentator());
         //文章或评论所属人-->通知对象
-        if (articleCommentDto.getType()==1){
+        if (articleCommentDto.getType() == 1) {
             //回复文章,找出文章所属人
             Article article = articleMapper.selectById(articleCommentDto.getParentId());
             notifitionDto.setReceiver(article.getCreator());
@@ -91,7 +96,7 @@ public class ArticleCommentServiceImpl extends ServiceImpl<ArticleCommentMapper,
             //设置被回复的文章id
             notifitionDto.setOuterid(article.getId());
         }
-        if (articleCommentDto.getType()==2){
+        if (articleCommentDto.getType() == 2) {
             //回复文章评论，找出评论人
             ArticleComment articleComment1 = articleCommentMapper.selectById(articleCommentDto.getParentId());
             notifitionDto.setReceiver(articleComment1.getCommentator());
@@ -100,6 +105,11 @@ public class ArticleCommentServiceImpl extends ServiceImpl<ArticleCommentMapper,
             //设置被回复评论id
             notifitionDto.setOuterid(articleComment1.getId());
         }
+        //将通知对象,当前登录用户放到缓存中去
+        cacheManager.getCache("notificationReceiverIdCache").put("notificationReceiverId", notifitionDto.getReceiver());
+        cacheManager.getCache("notificationReceiverIdCache").put("currentUserId", ShiroUtil.getProfile().getId());
+
+
         //调用方法对通知消息进行存储
         notifitionService.createNotifition(notifitionDto);
         //同时向前端试试发送通知，让用户感知
