@@ -9,6 +9,7 @@ import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
 import com.yao.common.CustomizeResponseCode;
 import com.yao.common.Result;
+import com.yao.common.myEnum.UploadImageType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -68,7 +69,16 @@ public class FileService {
         }
     }
 
-    public Result QiNiuUpload(MultipartFile file) {
+    //根据图片类型进行上传存储，uploadImageType
+    public String QiNiuUpload(MultipartFile file, Integer type) {
+        //存储空间的根文件名
+        String rootFileName = null;
+        if (type == 0) {
+            rootFileName = UploadImageType.CAROUSEL.getImageTypeName();
+        } else {
+            rootFileName = UploadImageType.ORTHER.getImageTypeName();
+        }
+
         String fileName = file.getOriginalFilename();
         try {
             InputStream inputStream = file.getInputStream();
@@ -80,18 +90,18 @@ public class FileService {
             //文件名
             fileName = UUID.randomUUID().toString() + fileName;
             String path = new DateTime().toString("yyyy-MM-dd");
-            fileName = path + "/" + fileName;
+            fileName = rootFileName + "/" + path + "/" + fileName;
 
             // 生成上传凭证，然后准备上传
             Auth auth = Auth.create(QiNiuAccessKeyId, QiNiuAccessKeySecret);
             String s = auth.uploadToken(QiNiuBucketname);
             uploadManager.put(inputStream, fileName, s, null, null);
             String url = "http://" + QiNiuDomain + "/" + fileName;
-            return Result.succ(CustomizeResponseCode.UPLOAD_SUCCESS.getMessage(), url);
+            return url;
 
         } catch (IOException e) {
             e.printStackTrace();
-            return Result.fail(CustomizeResponseCode.UPLOAD_FAIL.getMessage());
+            return null;
         }
 
     }

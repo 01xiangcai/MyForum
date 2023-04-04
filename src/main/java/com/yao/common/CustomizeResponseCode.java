@@ -50,6 +50,9 @@ public enum  CustomizeResponseCode {
     NOTIFITION_READ_SUCCESS("消息已读成功"),
     NOTIFITION_READ_FAIL("消息已读失败"),
 
+    CAROUSEL_FOUND_SUCCESS("轮播图查找成功"),
+    CAROUSEL_FOUND_FAIL("轮播图查找失败"),
+
 
     UPLOAD_SUCCESS("上传成功"),
     UPLOAD_FAIL("上传失败");

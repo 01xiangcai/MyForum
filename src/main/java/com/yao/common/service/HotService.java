@@ -52,10 +52,10 @@ public class HotService {
         return hotArticles;
     }
 
-    @Scheduled(cron = "0 0 0 * * ?")
-    public void clearExpiredData() {
-        redisTemplate.delete(ARTICLE_READ_COUNT_PREFIX);
-    }
+//    @Scheduled(cron = "0 0 0 * * ?")
+//    public void clearExpiredData() {
+//        redisTemplate.delete(ARTICLE_READ_COUNT_PREFIX);
+//    }
 
 
 }

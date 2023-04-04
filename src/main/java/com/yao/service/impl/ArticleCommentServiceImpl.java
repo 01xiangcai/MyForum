@@ -105,16 +105,16 @@ public class ArticleCommentServiceImpl extends ServiceImpl<ArticleCommentMapper,
             //设置被回复评论id
             notifitionDto.setOuterid(articleComment1.getId());
         }
-        //将通知对象,当前登录用户放到缓存中去
+        //将通知对象放到缓存中去
         cacheManager.getCache("notificationReceiverIdCache").put("notificationReceiverId", notifitionDto.getReceiver());
-        cacheManager.getCache("notificationReceiverIdCache").put("currentUserId", ShiroUtil.getProfile().getId());
 
-
-        //调用方法对通知消息进行存储
-        notifitionService.createNotifition(notifitionDto);
-        //同时向前端试试发送通知，让用户感知
-        notifitionHandler.sendNotification(notifitionDto);
-
+        //当通知对象和创建通知者不同时发送消息，即自己回复自己不用通知
+        if (notifitionDto.getNotifier()!=notifitionDto.getReceiver()){
+            //调用方法对通知消息进行存储
+            notifitionService.createNotifition(notifitionDto);
+            //同时向前端试试发送通知，让用户感知
+            notifitionHandler.sendNotification(notifitionDto);
+        }
 
         //增加文章的评论数
         Article article = new Article();
