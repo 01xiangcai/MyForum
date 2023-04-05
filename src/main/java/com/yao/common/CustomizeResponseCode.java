@@ -40,6 +40,10 @@ public enum  CustomizeResponseCode {
     COMMENT_TYPE_ERROE("评论类型错误"),
 
     USER_NOT_FOUND("该用户不存在"),
+    USER_UPDATE_FAIL("修改用户失败"),
+    USER_UPDATE_SUCCESS("修改用户成功"),
+
+    OLD_PASSWORD_ERROR("旧密码输入错误"),
 
     NOTIFITION_ERROR("通知参数错误"),
     NOTIFITION_INSERT_SUCCESS("新增通知成功"),
@@ -55,7 +59,8 @@ public enum  CustomizeResponseCode {
 
 
     UPLOAD_SUCCESS("上传成功"),
-    UPLOAD_FAIL("上传失败");
+    UPLOAD_FAIL("上传失败"),
+    PARAMETER_ERROR("参数有误");
 
 
 

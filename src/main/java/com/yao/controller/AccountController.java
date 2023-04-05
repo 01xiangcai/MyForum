@@ -35,7 +35,7 @@ public class AccountController {
     @Autowired
     UserService userService;
 
-    //登录 默认账号密码：markerhub / 111111
+    //登录
     @CrossOrigin
     @PostMapping("/login")
     public Result login(@Validated @RequestBody LoginDto loginDto, HttpServletResponse response) {
@@ -43,9 +43,8 @@ public class AccountController {
         User user = userService.getOne(new QueryWrapper<User>().eq("username", loginDto.getUsername()));
         Assert.notNull(user, "用户不存在");
         //hutools工具包的 MD5
-        if (!user.getPassword().equals(SecureUtil.md5(loginDto.getPassword()+ UserConstants.USER_SLAT))) {
-            return Result.fail("密码错误");
-        }
+        Assert.isTrue(user.getPassword().equals(SecureUtil.md5(loginDto.getPassword() + UserConstants.USER_SLAT)), "密码错误");
+
         //按用户id生成token
         String jwt = jwtUtils.generateToken(user.getId());
         response.setHeader("Authorization", jwt);
@@ -53,9 +52,9 @@ public class AccountController {
 
         return Result.succ(MapUtil.builder()
                 .put("id", user.getId())
-                .put("username",user.getUsername())
-                .put("avatar",user.getAvatar())
-                .put("email",user.getEmail())
+                .put("username", user.getUsername())
+                .put("avatar", user.getAvatar())
+                .put("email", user.getEmail())
                 .map()
         );
     }
@@ -64,7 +63,7 @@ public class AccountController {
     //退出
     @GetMapping("/logout")
     @RequiresAuthentication
-    public Result logout(){
+    public Result logout() {
         SecurityUtils.getSubject().logout();
         return Result.succ(null);
     }

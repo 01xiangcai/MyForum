@@ -4,6 +4,7 @@ import com.yao.common.Result;
 import com.yao.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.yao.entity.dto.RegisterDto;
+import com.yao.entity.dto.updateUserDto;
 
 /**
  * <p>
@@ -16,10 +17,12 @@ import com.yao.entity.dto.RegisterDto;
 public interface UserService extends IService<User> {
 
 
-    Result createUser(RegisterDto registerDto);
+    Result create(RegisterDto registerDto);
 
     Result deletedById(Long id);
 
     Result getUsers();
 
+
+    Result updateUser(updateUserDto updateUserDto);
 }

@@ -17,7 +17,7 @@ spring:
     host: 47.113.198.68
     port: 6379
 #    连接池配置
-    lettuce:
+    jedis:
       pool:
 #        最大连接数
         max-active: 50
