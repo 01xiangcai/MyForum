@@ -31,7 +31,8 @@ public class FileController {
     @ApiOperation("阿里云图片上传")
     @PostMapping("/images")
     public Result uploadImages(@RequestPart("file") MultipartFile file) {
-        return fileService.upload(file);
+        String url = fileService.upload(file);
+        return Result.succ(url);
     }
 
     @ApiOperation("七牛云图片上传")

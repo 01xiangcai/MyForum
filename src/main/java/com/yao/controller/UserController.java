@@ -14,6 +14,7 @@ import org.springframework.boot.context.properties.bind.BindResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * <p>
@@ -54,6 +55,12 @@ public class UserController {
             return Result.fail(CustomizeResponseCode.PARAMETER_ERROR.getMessage());
         }
         return userService.create(registerDto);
+    }
+
+    @ApiOperation("修改用户头像")
+    @PostMapping("/uploadAvatar")
+    public Result uploadAvatar(@RequestPart MultipartFile file,@RequestParam Long userId){
+        return userService.uploadAvatar(file,userId);
     }
 
     @ApiOperation("修改用户")

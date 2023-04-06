@@ -45,7 +45,8 @@ public class FileService {
     private String QiNiuDomain;
 
 
-    public Result upload(MultipartFile file) {
+    //阿里云
+    public String upload(MultipartFile file) {
         String fileName = file.getOriginalFilename();
         // 创建OSSClient实例。
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
@@ -54,7 +55,7 @@ public class FileService {
             InputStream inputStream = file.getInputStream();
             fileName = UUID.randomUUID().toString() + fileName;
             String path = new DateTime().toString("yyyy-MM-dd");
-            fileName = path + "/" + fileName;
+            fileName = "头像"+ path + "/" + fileName;
 
             ossClient.putObject(bucketname, fileName, inputStream);
             //关闭OSSClient
@@ -62,14 +63,14 @@ public class FileService {
 
             String url = "https://" + bucketname + "." + endpoint + '/' + fileName;
 
-            return Result.succ(CustomizeResponseCode.UPLOAD_SUCCESS.getMessage(), url);
+            return url;
         } catch (IOException e) {
             e.printStackTrace();
-            return Result.fail(CustomizeResponseCode.UPLOAD_FAIL.getMessage());
+            return null;
         }
     }
 
-    //根据图片类型进行上传存储，uploadImageType
+    //根据图片类型进行上传存储，uploadImageType,七牛云
     public String QiNiuUpload(MultipartFile file, Integer type) {
         //存储空间的根文件名
         String rootFileName = null;

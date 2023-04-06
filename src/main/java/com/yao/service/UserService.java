@@ -5,6 +5,7 @@ import com.yao.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.yao.entity.dto.RegisterDto;
 import com.yao.entity.dto.updateUserDto;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * <p>
@@ -25,4 +26,6 @@ public interface UserService extends IService<User> {
 
 
     Result updateUser(updateUserDto updateUserDto);
+
+    Result uploadAvatar(MultipartFile file, Long userId);
 }

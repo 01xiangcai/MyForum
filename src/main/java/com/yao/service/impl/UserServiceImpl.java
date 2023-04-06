@@ -5,15 +5,19 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.yao.common.CustomizeResponseCode;
 import com.yao.common.Result;
 import com.yao.common.constants.UserConstants;
+import com.yao.common.service.FileService;
 import com.yao.entity.User;
 import com.yao.entity.dto.RegisterDto;
 import com.yao.entity.dto.updateUserDto;
+import com.yao.entity.vo.UserUpdateVo;
 import com.yao.mapper.UserMapper;
 import com.yao.service.UserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.shiro.SecurityUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
@@ -32,6 +36,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Autowired
     UserMapper userMapper;
+
+    @Autowired
+    FileService fileService;
 
     @Override
     public Result create(RegisterDto registerDto) {
@@ -66,10 +73,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         String inputNewPassword = updateUserDto.getNewPassword();
         //修改密码
-        if (inputNewPassword!=null&&!inputNewPassword.isEmpty()){
+        if (inputNewPassword != null && !inputNewPassword.isEmpty()) {
             //校验输入的旧密码是否与数据库的密码相等
             String inputOldPassword = SecureUtil.md5(updateUserDto.getOldPassword() + UserConstants.USER_SLAT);
-            if (!inputOldPassword.equals(user.getPassword())){
+            if (!inputOldPassword.equals(user.getPassword())) {
                 return Result.fail(CustomizeResponseCode.OLD_PASSWORD_ERROR.getMessage());
             }
             //检验通过，设置新密码
@@ -77,21 +84,40 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             user.setPassword(newPassword);
         }
         //修改用户名
-        if (updateUserDto.getUsername()!=null){
+        if (updateUserDto.getUsername() != null) {
             user.setUsername(updateUserDto.getUsername());
         }
         //修改邮箱
-        if (updateUserDto.getEmail()!=null){
+        if (updateUserDto.getEmail() != null) {
             user.setEmail(updateUserDto.getEmail());
         }
 
         //存到数据库
         int rows = userMapper.updateById(user);
-        if (rows==0){
+        if (rows == 0) {
             return Result.fail(CustomizeResponseCode.USER_UPDATE_FAIL.getMessage());
         }
-        return Result.succ(CustomizeResponseCode.USER_UPDATE_SUCCESS.getMessage());
 
+        //拿到最终数据返还
+        User user1 = userMapper.selectById(updateUserDto.getUserId());
+        UserUpdateVo userUpdateVo = new UserUpdateVo();
+        BeanUtils.copyProperties(user1,userUpdateVo);
+        return Result.succ(CustomizeResponseCode.USER_UPDATE_SUCCESS.getMessage(),userUpdateVo);
+
+    }
+
+    @Override
+    public Result uploadAvatar(MultipartFile file, Long userId) {
+        //嗲用上传服务，得到回调后的图片地址
+        String url = fileService.upload(file);
+        //将用户信息查询出来替换头像
+        User user = userMapper.selectById(userId);
+        user.setAvatar(url);
+        int rows = userMapper.updateById(user);
+        if (rows == 0) {
+            return Result.fail(CustomizeResponseCode.UPLOAD_FAIL.getMessage());
+        }
+        return Result.succ(CustomizeResponseCode.UPLOAD_SUCCESS.getMessage(),url);
     }
 
     @Override
