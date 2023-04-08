@@ -1,5 +1,6 @@
 package com.yao.common.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.yao.entity.Article;
 import com.yao.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ public class HotService {
     @Autowired
     ArticleService articleService;
 
+    //
     public void incrementArticleReadCount(Long articleId) {
         String key = ARTICLE_READ_COUNT_PREFIX;
         redisTemplate.opsForZSet().incrementScore(key, String.valueOf(articleId), 1);
@@ -39,16 +41,17 @@ public class HotService {
         }
     }
 
+    public void createReleventArticle(Long articleId){
+
+    }
+
     public List<Article> getHotArticles(Integer count) {
         Set<String> articleIds = redisTemplate.opsForZSet().reverseRange(ARTICLE_READ_COUNT_PREFIX, 0, count - 1);
-        List<Article> hotArticles = new ArrayList<>();
-        for (String articleId : articleIds) {
-//            Long id = Long.valueOf(articleId.substring(ARTICLE_READ_COUNT_PREFIX.length()));
-            Article article = articleService.getById(articleId);
-            if (article != null) {
-                hotArticles.add(article);
-            }
-        }
+
+        QueryWrapper<Article> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("id",articleIds);
+        List<Article> hotArticles = articleService.list(queryWrapper);
+
         return hotArticles;
     }
 

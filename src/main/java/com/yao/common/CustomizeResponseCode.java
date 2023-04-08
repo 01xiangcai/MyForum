@@ -28,6 +28,12 @@ public enum  CustomizeResponseCode {
     ARTICLE_DELETE_SUCCES("删除文章成功"),
     ARTICLE_DELETE_FAIL("删除文章失败"),
 
+    ARTICLE_CREATETAG_SUCCESS("增加标签成功"),
+    ARTICLE_CREATETAG_FAIL("增加标签失败"),
+    ARTICLE_GETATETAG_SUCCESS("查看标签成功"),
+    ARTICLE_GETATETAG_FAIL("查看标签失败"),
+
+
 
 
     COMMENT_IS_NULL("评论人id或内容或类型为空"),
