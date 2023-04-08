@@ -52,6 +52,7 @@ public class ArticleController {
             return Result.fail(CustomizeResponseCode.ARTICLE_NOT_FOUND.getMessage());
         }
         hotService.incrementArticleReadCount(id);
+        hotService.createReleventArticle(id);
         return Result.succ(CustomizeResponseCode.ARTICLE_FOUND_SUCCESS.getMessage(),article);
     }
 
@@ -63,6 +64,16 @@ public class ArticleController {
             return Result.fail(CustomizeResponseCode.ARTICLE_NOT_FOUND.getMessage());
         }
         return Result.succ(CustomizeResponseCode.ARTICLE_FOUND_SUCCESS.getMessage(),hotArticles);
+    }
+
+    @ApiOperation("查看相关文章")
+    @GetMapping("/article/relevent")
+    public Result articleRelevent(Integer tagId,Integer count){
+        List<Article> releventArticles = hotService.getReleventArticle(tagId, count);
+        if (releventArticles.size()==0||releventArticles==null){
+            return Result.fail(CustomizeResponseCode.ARTICLE_NOT_FOUND.getMessage());
+        }
+        return Result.succ(CustomizeResponseCode.ARTICLE_FOUND_SUCCESS.getMessage(),releventArticles);
     }
 
     //根据用户id查看文章
