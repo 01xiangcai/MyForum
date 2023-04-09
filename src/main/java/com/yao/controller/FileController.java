@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @className: FileController
@@ -40,6 +44,21 @@ public class FileController {
     public Result qiNiuUploadImages(@RequestPart("file") MultipartFile file) {
         String url = fileService.QiNiuUpload(file, 0);
         return Result.succ(url);
+    }
+
+    @ApiOperation("文章内容批量上传图片")
+    @PostMapping("/uploadImagesBatch")
+    public List<Map<String,String>> uploadImagesBatch(@RequestPart("files") MultipartFile[] files){
+        List<String> urls = fileService.uploadImages(files, 11);
+        //返回数据
+        List<Map<String,String>> data = new ArrayList<>();
+        for (int i = 0; i < urls.size(); i++) {
+            HashMap<String, String> map = new HashMap<>();
+            map.put("pos",String.valueOf(i));
+            map.put("url",urls.get(i));
+            data.add(map);
+        }
+        return data;
     }
 
 

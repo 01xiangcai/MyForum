@@ -44,15 +44,15 @@ public class HotService {
     }
 
     //相关文章,传文章id
-    public void createReleventArticle(Long articleId){
+    public void createReleventArticle(Long articleId) {
         //根据文章id去获取标签id
         Article article = articleService.getById(articleId);
         Long tagId = article.getTag();
-        String key = ARTICLE_RELEVENT+tagId;
-        redisTemplate.opsForZSet().incrementScore(key,String.valueOf(articleId),1);
+        String key = ARTICLE_RELEVENT + tagId;
+        redisTemplate.opsForZSet().incrementScore(key, String.valueOf(articleId), 1);
         Long size = redisTemplate.opsForZSet().size(key);
-        if (size>12){
-            redisTemplate.opsForZSet().removeRange(key,0,size-13);
+        if (size > 12) {
+            redisTemplate.opsForZSet().removeRange(key, 0, size - 13);
         }
     }
 
@@ -61,17 +61,17 @@ public class HotService {
         Set<String> articleIds = redisTemplate.opsForZSet().reverseRange(ARTICLE_READ_COUNT_PREFIX, 0, count - 1);
 
         QueryWrapper<Article> queryWrapper = new QueryWrapper<>();
-        queryWrapper.in("id",articleIds);
+        queryWrapper.in("id", articleIds);
         List<Article> hotArticles = articleService.list(queryWrapper);
 
         return hotArticles;
     }
 
     //获取相关文章，根据标签id获取，可指定数量
-    public List<Article> getReleventArticle(Integer tagId,Integer count){
+    public List<Article> getReleventArticle(Integer tagId, Integer count) {
         Set<String> articleIds = redisTemplate.opsForZSet().reverseRange(ARTICLE_RELEVENT + tagId, 0, count - 1);
         QueryWrapper<Article> queryWrapper = new QueryWrapper<>();
-        queryWrapper.in("id",articleIds);
+        queryWrapper.in("id", articleIds);
         List<Article> articleList = articleService.list(queryWrapper);
         return articleList;
     }
