@@ -9,12 +9,15 @@ import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
 import com.yao.common.CustomizeResponseCode;
 import com.yao.common.Result;
+import com.yao.common.myEnum.UploadImageType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -44,7 +47,8 @@ public class FileService {
     private String QiNiuDomain;
 
 
-    public Result upload(MultipartFile file) {
+    //阿里云
+    public String upload(MultipartFile file) {
         String fileName = file.getOriginalFilename();
         // 创建OSSClient实例。
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
@@ -53,7 +57,7 @@ public class FileService {
             InputStream inputStream = file.getInputStream();
             fileName = UUID.randomUUID().toString() + fileName;
             String path = new DateTime().toString("yyyy-MM-dd");
-            fileName = path + "/" + fileName;
+            fileName = "头像" + path + "/" + fileName;
 
             ossClient.putObject(bucketname, fileName, inputStream);
             //关闭OSSClient
@@ -61,14 +65,23 @@ public class FileService {
 
             String url = "https://" + bucketname + "." + endpoint + '/' + fileName;
 
-            return Result.succ(CustomizeResponseCode.UPLOAD_SUCCESS.getMessage(), url);
+            return url;
         } catch (IOException e) {
             e.printStackTrace();
-            return Result.fail(CustomizeResponseCode.UPLOAD_FAIL.getMessage());
+            return null;
         }
     }
 
-    public Result QiNiuUpload(MultipartFile file) {
+    //根据图片类型进行上传存储，uploadImageType,七牛云
+    public String QiNiuUpload(MultipartFile file, Integer type) {
+        //存储空间的根文件名
+        String rootFileName = null;
+        if (type == 0) {
+            rootFileName = UploadImageType.CAROUSEL.getImageTypeName();
+        } else {
+            rootFileName = UploadImageType.ORTHER.getImageTypeName();
+        }
+
         String fileName = file.getOriginalFilename();
         try {
             InputStream inputStream = file.getInputStream();
@@ -80,20 +93,62 @@ public class FileService {
             //文件名
             fileName = UUID.randomUUID().toString() + fileName;
             String path = new DateTime().toString("yyyy-MM-dd");
-            fileName = path + "/" + fileName;
+            fileName = rootFileName + "/" + path + "/" + fileName;
 
-            // 生成上传凭证，然后准备上传
-            Auth auth = Auth.create(QiNiuAccessKeyId, QiNiuAccessKeySecret);
-            String s = auth.uploadToken(QiNiuBucketname);
-            uploadManager.put(inputStream, fileName, s, null, null);
+            uploadManager.put(inputStream, fileName, getUploadToken(), null, null);
             String url = "http://" + QiNiuDomain + "/" + fileName;
-            return Result.succ(CustomizeResponseCode.UPLOAD_SUCCESS.getMessage(), url);
+            return url;
 
         } catch (IOException e) {
             e.printStackTrace();
-            return Result.fail(CustomizeResponseCode.UPLOAD_FAIL.getMessage());
+            return null;
         }
+    }
 
+    //获取上传凭证
+    private String getUploadToken() {
+        // 生成上传凭证，然后准备上传
+        Auth auth = Auth.create(QiNiuAccessKeyId, QiNiuAccessKeySecret);
+        return auth.uploadToken(QiNiuBucketname);
+    }
+
+    //批量上传图片七牛云，主要是文章或问题内容里面的图片
+    public List<String> uploadImages(MultipartFile[] files, Integer type) {
+        //存储空间的根文件名
+        String rootFileName = null;
+        //判断是文章还是问题
+        if (type == UploadImageType.ARTICLE_CONTENT_PICTURE.getImageType()) {
+            rootFileName = UploadImageType.ARTICLE_CONTENT_PICTURE.getImageTypeName();
+        } else if (type == UploadImageType.QUESTION_CONTENT_PICTURE.getImageType()) {
+            rootFileName = UploadImageType.QUESTION_CONTENT_PICTURE.getImageTypeName();
+        }
+        //定义返回的url集
+        ArrayList<String> urls = new ArrayList<>();
+        for (MultipartFile file : files) {
+            if (!file.isEmpty()) {
+                //文件名
+                String filename = file.getOriginalFilename();
+                filename = UUID.randomUUID().toString() + filename;
+                String path = new DateTime().toString("yyyy-MM-dd");
+                filename = rootFileName + "/" + path + "/" + filename;
+
+                //构造一个带只当Zone对象的配置类
+                Configuration cfg = new Configuration();
+                UploadManager uploadManager = new UploadManager(cfg);
+
+                try {
+                    InputStream inputStream = file.getInputStream();
+                    //上传到七牛云
+                    uploadManager.put(inputStream, filename, getUploadToken(), null, null);
+                    String url = "http://" + QiNiuDomain + "/" + filename;
+                    //放入结果集
+                    urls.add(url);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return urls;
     }
 
 

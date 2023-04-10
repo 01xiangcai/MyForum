@@ -64,7 +64,7 @@ public class ArticleRecords implements Serializable {
     /**
      * 标签
      */
-    private String tag;
+    private Long tag;
 
     private Integer deleted;
 

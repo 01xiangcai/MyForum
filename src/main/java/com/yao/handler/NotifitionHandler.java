@@ -106,13 +106,21 @@ public class NotifitionHandler extends TextWebSocketHandler {
     }
 
 
+    //获取websocket连接中参数userId的值
     private Long getUserId(WebSocketSession session) {
-        String userIdStr = session.getUri().getQuery().split("=")[1];
-        try {
+//        String userIdStr = session.getUri().getQuery().split("=")[1];
+        String query = session.getUri().getQuery();
+        //当连接中有参数userId的值时query.length()的值大于8，没有值时为8
+        if (query!=null&&query.length()>8){
+            String userIdStr = query.split("=")[1];
             return Long.parseLong(userIdStr);
-        } catch (NumberFormatException e) {
-            return null;
         }
+        return null;
+//        try {
+//
+//        } catch (NumberFormatException e) {
+//            return null;
+//        }
     }
 
 }

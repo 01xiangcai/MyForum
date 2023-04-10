@@ -28,6 +28,12 @@ public enum  CustomizeResponseCode {
     ARTICLE_DELETE_SUCCES("删除文章成功"),
     ARTICLE_DELETE_FAIL("删除文章失败"),
 
+    ARTICLE_CREATETAG_SUCCESS("增加标签成功"),
+    ARTICLE_CREATETAG_FAIL("增加标签失败"),
+    ARTICLE_GETATETAG_SUCCESS("查看标签成功"),
+    ARTICLE_GETATETAG_FAIL("查看标签失败"),
+
+
 
 
     COMMENT_IS_NULL("评论人id或内容或类型为空"),
@@ -40,6 +46,10 @@ public enum  CustomizeResponseCode {
     COMMENT_TYPE_ERROE("评论类型错误"),
 
     USER_NOT_FOUND("该用户不存在"),
+    USER_UPDATE_FAIL("修改用户失败"),
+    USER_UPDATE_SUCCESS("修改用户成功"),
+
+    OLD_PASSWORD_ERROR("旧密码输入错误"),
 
     NOTIFITION_ERROR("通知参数错误"),
     NOTIFITION_INSERT_SUCCESS("新增通知成功"),
@@ -50,9 +60,13 @@ public enum  CustomizeResponseCode {
     NOTIFITION_READ_SUCCESS("消息已读成功"),
     NOTIFITION_READ_FAIL("消息已读失败"),
 
+    CAROUSEL_FOUND_SUCCESS("轮播图查找成功"),
+    CAROUSEL_FOUND_FAIL("轮播图查找失败"),
+
 
     UPLOAD_SUCCESS("上传成功"),
-    UPLOAD_FAIL("上传失败");
+    UPLOAD_FAIL("上传失败"),
+    PARAMETER_ERROR("参数有误");
 
 
 
