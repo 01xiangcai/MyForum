@@ -1,6 +1,7 @@
 package com.yao.controller;
 
 import com.baomidou.mybatisplus.extension.api.R;
+import com.yao.common.CustomizeResponseCode;
 import com.yao.common.Result;
 import com.yao.common.service.FileService;
 import com.yao.service.CarouselService;
@@ -48,18 +49,20 @@ public class FileController {
 
     @ApiOperation("文章内容批量上传图片")
     @PostMapping("/uploadImagesBatch")
-    public List<Map<String,String>> uploadImagesBatch(@RequestPart("files") MultipartFile[] files){
+    public Result uploadImagesBatch(@RequestPart("files") MultipartFile[] files){
         List<String> urls = fileService.uploadImages(files, 11);
         //返回数据
         List<Map<String,String>> data = new ArrayList<>();
         for (int i = 0; i < urls.size(); i++) {
             HashMap<String, String> map = new HashMap<>();
-            map.put("pos",String.valueOf(i));
+            map.put("pos",String.valueOf(i+1));
             map.put("url",urls.get(i));
             data.add(map);
         }
-        return data;
+        return Result.succ(CustomizeResponseCode.UPLOAD_SUCCESS.getMessage(),data);
     }
+
+
 
 
 
